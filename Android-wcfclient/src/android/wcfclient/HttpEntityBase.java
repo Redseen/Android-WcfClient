@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -20,24 +22,40 @@ import org.apache.http.util.EntityUtils;
 */
 public abstract class HttpEntityBase {
 
-	// Http要求を出して応答を取得、返す
-	protected HttpResult AccessHttp(HttpUriRequest request) { return AccessHttp(request, 30000, 50000); }
+	// Basic認証のユーザー名
+	private String _UserName = null;
+	
+	// Basic認証のパスワード
+	private String _Password = null;
+	
+	// 接続タイムアウト
+	private int _ConnectionTimeout = 30000;
+
+	// ソケットタイムアウト
+	private int _SocketTimeout = 50000;
 
 	// Http要求を出して応答を取得、返す
-	protected HttpResult AccessHttp(HttpUriRequest request, int connectionTimeout, int socketTimeout) {
+	protected HttpResult AccessHttp(HttpUriRequest request) {
+
+		// 結果
 		final HttpResult Result = new HttpResult();
 
 		// タイムアウト設定
 		HttpParams httpParms = new BasicHttpParams();
-		httpParms.setIntParameter(AllClientPNames.CONNECTION_TIMEOUT, connectionTimeout);
-		httpParms.setIntParameter(AllClientPNames.SO_TIMEOUT, socketTimeout);
+		httpParms.setIntParameter(AllClientPNames.CONNECTION_TIMEOUT, _ConnectionTimeout);
+		httpParms.setIntParameter(AllClientPNames.SO_TIMEOUT, _SocketTimeout);
 
 		// 接続生成
-		DefaultHttpClient _HttpClient = new DefaultHttpClient(httpParms);
+		DefaultHttpClient HttpClient = new DefaultHttpClient(httpParms);
 
+		// Basic認証のユーザー名が設定されている場合は認証情報を設定する
+		if (_UserName != null) {
+			HttpClient.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(_UserName,_Password));
+		}
+		
 		String StringContents = "";
 		try {
-			StringContents = _HttpClient.execute(request, new ResponseHandler<String>() {
+			StringContents = HttpClient.execute(request, new ResponseHandler<String>() {
 				public String handleResponse(HttpResponse httpresponse) throws ClientProtocolException, IOException {
 
 					// 実行してステータスコードを取得する
@@ -85,7 +103,7 @@ public abstract class HttpEntityBase {
         	Result.set_ErrorMessage("Httpエラーが発生しました。(IOException)");
 		} finally  {
 			// 接続シャットダウン
-			_HttpClient.getConnectionManager().shutdown();
+			HttpClient.getConnectionManager().shutdown();
 		}
 
 		// 応答を返す

@@ -7,16 +7,13 @@ import org.apache.http.ParseException;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 /*
 *
@@ -201,6 +198,15 @@ public abstract class WCFDataServiceBase extends HttpEntityBase {
 	}
 
 	// ヘッダー追加
-	protected HttpUriRequest AddHeader(HttpUriRequest request) { return request; }
+	protected HttpUriRequest AddHeader(HttpUriRequest request) { 
+	
+		// ヘッダーを追加する
+    	// Jsonを扱う
+    	request.setHeader("Accept", "application/json");
+		request.setHeader("Content-type", "application/json");
+
+		return request; 
+
+	}
 
 }
