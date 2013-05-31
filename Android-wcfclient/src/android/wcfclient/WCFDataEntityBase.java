@@ -19,8 +19,6 @@ public abstract class WCFDataEntityBase {
 	protected abstract String getTypeName();
 	// このデータがユニークになるRESTURL
 	protected abstract String getUniqueUrl();
-	// 新しいインスタンスを生成する
-	public abstract WCFDataEntityBase CreateInstance();
 
 	// RESTに送信するJSONデータの取得
 	public JSONObject getJSONObject() {

@@ -15,6 +15,8 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
+import android.os.StrictMode;
+
 /*
 *
 *	Httpに関わるクラスの基底クラス
@@ -36,6 +38,8 @@ public abstract class HttpEntityBase {
 
 	// Http要求を出して応答を取得、返す
 	protected HttpResult AccessHttp(HttpUriRequest request) {
+		
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
 
 		// 結果
 		final HttpResult Result = new HttpResult();

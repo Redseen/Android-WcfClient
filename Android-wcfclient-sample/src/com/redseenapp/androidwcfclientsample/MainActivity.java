@@ -30,7 +30,18 @@ public class MainActivity extends Activity {
 				
 				NorthwindDataService DataService = new NorthwindDataService();
 
-				DataService.Select(new DataCustomer(), CustomerList);
+				try {
+					DataService.Select(DataCustomer.class, CustomerList);
+				} catch (InstantiationException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				}
 				
 				if (CustomerList.size() > 0) {
 					((TextView) findViewById(R.id.labCustomerName)).setText(CustomerList.get(0).getCompanyName());
@@ -38,9 +49,9 @@ public class MainActivity extends Activity {
 				
 			}
 		});
-		
-	}
 
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

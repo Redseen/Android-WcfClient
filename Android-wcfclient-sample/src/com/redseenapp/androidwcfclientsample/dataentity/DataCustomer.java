@@ -112,7 +112,4 @@ public class DataCustomer extends WCFDataEntityBase {
 	public String getFax() { return this._Fax; }
 	public void setFax(String value) { this._Fax = value; }
 
-	@Override
-	public WCFDataEntityBase CreateInstance() { return new DataCustomer(); }
-
 }

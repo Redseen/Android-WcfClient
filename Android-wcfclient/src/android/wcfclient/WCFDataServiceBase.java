@@ -29,19 +29,22 @@ public abstract class WCFDataServiceBase extends HttpEntityBase {
 	protected abstract String getTargetUrl();
 
 	// データ取得
-	public <T extends WCFDataEntityBase> HttpResult Select(T seed, ArrayList<T> RetList) {
+	public <T extends WCFDataEntityBase> HttpResult Select(Class<?> classInfo, ArrayList<T> RetList) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 
-		return Select(seed, RetList, null);
+		return Select(classInfo, RetList, null);
 
 	}
 
 	// データ取得（条件付き）
-	public <T extends WCFDataEntityBase> HttpResult Select(T seed, ArrayList<T> RetList, String condition) {
+	public <T extends WCFDataEntityBase> HttpResult Select(Class<?> classInfo, ArrayList<T> RetList, String condition) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		HttpResult Result = null;
 
 		// 返すリスト
 		if (RetList == null) RetList = new ArrayList<T>();
 
+		// インスタンス生成
+		T seed = (T) Class.forName(classInfo.getName()).newInstance();
+		
 		// URL
 		String mUrl = getTargetUrl() + "/" + seed.getTableName();
 
@@ -82,8 +85,7 @@ public abstract class WCFDataServiceBase extends HttpEntityBase {
 	        for (int i=0; i<count; i++){
 
 	        	// アイテムを生成
-				@SuppressWarnings("unchecked")
-				T NewItem = (T)seed.CreateInstance();
+				T NewItem = (T) Class.forName(classInfo.getName()).newInstance();
 
 	        	// JSONオブジェクトから値を設定
 	        	NewItem.setFromJSONObject(DataArray.getJSONObject(i));
